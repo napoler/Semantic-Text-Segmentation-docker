@@ -1,11 +1,9 @@
-from typing import Union
+from flask import Flask, redirect, url_for, request
 
-from fastapi import FastAPI
 try:
-    from .tkitTextSegmentaion.text_segmentation import textSegmentation,auto_segmentation
+    from .tkitTextSegmentaion.text_segmentation import textSegmentation,text_segmentation
 except ImportError:
-    from tkitTextSegmentaion.text_segmentation import textSegmentation,auto_segmentation
-from pydantic import BaseModel
+    from tkitTextSegmentaion.text_segmentation import textSegmentation,text_segmentation
 import os
 if os.path.isfile ("data/word2vec.6B.bin"):
 
@@ -13,25 +11,27 @@ if os.path.isfile ("data/word2vec.6B.bin"):
 else:
     glove_file="/code/app/data/word2vec.6B.bin"
 
+# # seg_obj=textSegmentation(glove_file)
+# def auto(text,k):
 
-app = FastAPI()
-class Item(BaseModel):
-    text: str # 原始文本
-    k: int # 分段数目
+#     if os.path.isfile ("data/word2vec.6B.bin"):
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+#         glove_file="data/word2vec.6B.bin"
+#     else:
+#         glove_file="/code/app/data/word2vec.6B.bin"
+
+#     seg_obj=textSegmentation(glove_file)
+#     # print("text",text)
+#     return seg_obj.auto(str(text),k=int(k))
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return 'Hello, World!'
 
 
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: Union[str, None] = None):
-#     return {"item_id": item_id, "q": q}
-
-
-
-@app.post("/text_segmentation")
-def text_segmentation(item: Item):
+@app.route("/text_segmentation",methods = ['POST'])
+def text_segmentation():
     """
     The text_segmentation function takes a text string and returns a list of paragraphs.
     The paragraph is defined as the longest sequence of characters without any newline.
@@ -57,16 +57,26 @@ def text_segmentation(item: Item):
     # out =auto(item.text,item.k)
 
 
-
+    if request.is_json:
+        # name = request.json.get('name')
+        # age = request.json.get('age') # auto type casting depending on the json format
+        data=request.json
+        print(data)
+    else:
+        return {}
     # print("text",text)
-    # out=seg_obj.auto(str(item.text),k=int(item.k))
+    # out=seg_obj.auto(str(data['text']),k=int(data['k']))
 
     if os.path.isfile ("data/word2vec.6B.bin"):
 
         glove_file="data/word2vec.6B.bin"
     else:
         glove_file="/code/app/data/word2vec.6B.bin"
-    out=auto_segmentation(str(item.text),int(item.k),glove_file)
+    out=auto_segmentation(text=str(data['text']),k=int(data['k']),glove_file)
+
 
     return {"paragraph":list(out)}
     # return {}
+    # return {}
+if __name__ == '__main__':
+   app.run(debug = True)

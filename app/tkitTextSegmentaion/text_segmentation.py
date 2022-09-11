@@ -13,9 +13,9 @@ from scipy import spatial
 # import matplotlib.pyplot as plt
 
 
-class text_segmentation:
+class textSegmentation:
 
-    def __init__(self,glove_file):
+    def __init__(self,glove_file,**kwargs):
 
         self.voc_dict = None
         self.model = None
@@ -89,7 +89,7 @@ class text_segmentation:
 #             print("deleted", len(self.doc_tokens), len(self.voc_words))
 
 
-        return ;
+        # return ;
 
     def load_language_model(self):
 
@@ -101,8 +101,7 @@ class text_segmentation:
     def get_word_embed_and_entropy(self):
         '''
         Get the embeddings and entropy for each word in the document
-        note: at this point we are only measuring the entropy of a word from its within document frequency.
-              Ideally we would use a larger corpus on similar topics as the input documents to get better word entropy measures.
+        note: at this point we are only measuring the entropy of a word from its within document frequency.Ideally we would use a larger corpus on similar topics as the input documents to get better word entropy measures.
         '''
 
         # Load the language model
@@ -128,7 +127,7 @@ class text_segmentation:
                 self.voc_dict[word]['entropy']= (self.voc_freqs[word]/self.total_freq)*(-math.log(self.voc_freqs[word]/self.total_freq))
                 id = id+1
 
-        return ;
+        # return ;
 
     def get_embedding_sums(self):
 
@@ -275,7 +274,7 @@ class text_segmentation:
         if (self.seg_text is None):
             self.get_segment_texts()
         if not(self.seg_text is None) and (len(self.seg_text)< i) and (i>=0):
-           res =  self.seg_text[i]
+            res =  self.seg_text[i]
 
         return res
     def auto(self,text,k=5):
@@ -287,3 +286,21 @@ class text_segmentation:
         # 分析分段
         self.greedy_text_segmentation(k)
         return self.get_segment_texts()
+# seg_obj=textSegmentation(glove_file)
+def auto_segmentation(text,k,glove_file):
+    """
+    The text_segmentation function takes a string and returns a list of strings.
+    The function takes in the following parameters:
+    text - The text to be segmented, as a string.
+    k - The number of segments to split the text into, as an integer.  Defaults to 5 if not specified.
+
+    :param text: Used to Pass the text to be segmented.
+    :param k: Used to Determine the number of segments to be returned.
+    :param glove_file: Used to Specify the location of the glove file.
+    :return: A list of the segments, where each segment is a list of words.
+
+    :doc-author: Trelent
+    """
+    seg_obj=textSegmentation(glove_file)
+    # print("text",text)
+    return seg_obj.auto(str(text),k=int(k))

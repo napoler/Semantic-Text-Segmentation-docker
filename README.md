@@ -3,6 +3,9 @@ Semantic-Text-Segmentation-with-Embeddings docker api
 
 
 
+测试开发
+> uvicorn main:app --reload
+
 导出依赖
 > pipreqs ./ --force
 
