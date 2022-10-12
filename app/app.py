@@ -27,7 +27,14 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return 'Hello, World!'
+    return """
+        分段
+        api '/text_segmentation'
+        {
+        "text": "It’s all-too-tempting to recreate that Lady and the Tramp scene with your pup, sharing a plate of pasta and almost smooching their adorable nose. It undoubtedly makes for a cute photo, but is pasta actually safe for them to eat? It turns out, the answer isn’t crystal clear.    While some veterinarians say it’s perfectly fine for your dog to eat a moderate amount of pasta, others disagree. The amount of pasta given to a dog and the pasta’s ingredients play a large role. And, like with all foods, you should first make sure your pet isn’t allergic to pasta or its ingredients before you give them a heaping plate of spaghetti.",
+        "k": 3
+        }
+"""
 
 
 @app.route("/text_segmentation",methods = ['POST'])
